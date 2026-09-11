@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cart — PUL</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <a class="logo" href="index.html">PUL<span>베이</span></a>
+    <nav><a class="pill cart-link" href="cart.html">Cart <em data-cart-count hidden></em></a></nav>
+  </header>
+  <main class="sheet wide">
+    <p class="kicker">Bag</p>
+    <h1>Cart</h1>
+    <div id="lines"></div>
+    <div class="total" id="tot"></div>
+    <button type="button" id="go">Checkout</button>
+    <p id="done" hidden>Order parked on this phone. No payment taken — next step is real checkout.</p>
+    <p class="hint"><a href="index.html">Keep shopping</a></p>
+  </main>
+  <script src="products.js"></script>
+  <script>
+    function draw() {
+      const items = pulCart();
+      if (!items.length) {
+        lines.innerHTML = "<p class='lead'>Cart is empty.</p>";
+        tot.textContent = "";
+        go.disabled = true;
+        return;
+      }
+      go.disabled = false;
+      lines.innerHTML = items.map(x => `
+        <div class="line">
+          <div><b>${x.name}</b><br><span class="hint">${x.group}</span></div>
+          <div class="qty">
+            <button data-act="minus" data-id="${x.id}">−</button>
+            <span>${x.qty}</span>
+            <button data-act="plus" data-id="${x.id}">+</button>
+          </div>
+          <b>£${(x.price * x.qty).toFixed(2)}</b>
+        </div>`).join("");
+      tot.textContent = "Total £" + pulTotal().toFixed(2);
+    }
+    lines.addEventListener("click", e => {
+      const id = e.target.dataset.id;
+      if (!id) return;
+      const row = pulCart().find(x => x.id === id);
+      if (!row) return;
+      pulSetQty(id, e.target.dataset.act === "plus" ? row.qty + 1 : row.qty - 1);
+      draw();
+    });
+    go.onclick = () => {
+      if (!pulCart().length) return;
+      localStorage.removeItem("pulCart");
+      pulBadge();
+      draw();
+      done.hidden = false;
+    };
+    draw();
+  </script>
+</body>
+</html>

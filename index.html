@@ -3,76 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>PUL — buy &amp; sell K-pop</title>
+  <title>PUL — marketplace</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="glow g1"></div>
-  <div class="glow g2"></div>
+  <div class="glow g1"></div><div class="glow g2"></div>
   <header>
     <a class="logo" href="index.html">PUL<span>베이</span></a>
     <nav>
-      <a href="#feed">Trade</a>
       <a href="sell.html">Sell</a>
-      <a class="pill" href="sell.html">List an item</a>
+      <a class="pill cart-link" href="cart.html">Cart <em data-cart-count hidden></em></a>
     </nav>
   </header>
-
   <section class="hero">
-    <p class="kicker">UK fans · photocards · albums</p>
-    <h1>Buy and sell<br>the pull.</h1>
-    <p class="lead">A desk for K-pop fans to trade merch without living in DMs. Money held until it arrives — when payments go live.</p>
-    <div class="cta">
-      <a class="btn" href="#feed">Browse the floor</a>
-      <a class="btn ghost" href="sell.html">Sell something</a>
+    <p class="kicker">UK floor · demo stock</p>
+    <h1>Search.<br>Add. Check out.</h1>
+    <p class="lead">Working cart on this device. Payments not live — checkout stays a dummy confirm.</p>
+    <div class="searchbar">
+      <input id="q" placeholder="Search group, member, album…" />
+      <select id="type">
+        <option value="">All types</option>
+        <option>Photocard</option>
+        <option>Album</option>
+        <option>Lightstick</option>
+        <option>Set</option>
+      </select>
     </div>
   </section>
-
   <section id="feed">
-    <div class="row">
-      <h2>On the floor</h2>
-      <p class="hint">Layout only. No live listings yet.</p>
-    </div>
-    <div class="grid">
-      <article class="card">
-        <div class="pc c1"><span>PC</span></div>
-        <h3>Photocard</h3>
-        <p>Group · member · era</p>
-        <b>£—</b>
-      </article>
-      <article class="card">
-        <div class="pc c2"><span>ALBUM</span></div>
-        <h3>Sealed album</h3>
-        <p>With POB if listed</p>
-        <b>£—</b>
-      </article>
-      <article class="card">
-        <div class="pc c3"><span>LTSTK</span></div>
-        <h3>Lightstick</h3>
-        <p>Version + condition</p>
-        <b>£—</b>
-      </article>
-      <article class="card">
-        <div class="pc c4"><span>SET</span></div>
-        <h3>Unit set</h3>
-        <p>Priced as a bundle</p>
-        <b>£—</b>
-      </article>
-    </div>
+    <div class="row"><h2>Floor</h2><p class="hint" id="count"></p></div>
+    <div class="grid" id="grid"></div>
   </section>
-
-  <section class="how">
-    <h2>How a trade should work</h2>
-    <ol>
-      <li><strong>List it.</strong> Photo, group, price, UK post.</li>
-      <li><strong>Buyer pays PUL.</strong> Not the seller’s personal account.</li>
-      <li><strong>Tracked post.</strong> You confirm it landed. Then we release.</li>
-    </ol>
-  </section>
-
-  <footer>
-    <span>PUL</span>
-    <span>Fans trade. We hold the bag until it’s real.</span>
-  </footer>
+  <footer><span>PUL</span><span>Demo listings — not real sellers.</span></footer>
+  <script src="products.js"></script>
+  <script>
+    const grid = document.getElementById("grid");
+    function paint() {
+      const q = (document.getElementById("q").value || "").toLowerCase();
+      const t = document.getElementById("type").value;
+      const list = PRODUCTS.filter(p => {
+        const blob = (p.name + " " + p.group + " " + p.era + " " + p.type).toLowerCase();
+        return blob.includes(q) && (!t || p.type === t);
+      });
+      count.textContent = list.length + " items";
+      grid.innerHTML = list.map((p, i) => `
+        <article class="card">
+          <div class="pc c${(i % 4) + 1}"><span>${p.type.slice(0,6).toUpperCase()}</span></div>
+          <h3>${p.name}</h3>
+          <p>${p.group} · ${p.era}</p>
+          <b>£${p.price.toFixed(2)}</b>
+          <button class="add" data-id="${p.id}">Add to cart</button>
+        </article>`).join("") || "<p class='hint'>Nothing matches.</p>";
+    }
+    grid.addEventListener("click", e => {
+      const id = e.target.dataset && e.target.dataset.id;
+      if (!id) return;
+      pulAdd(id);
+      e.target.textContent = "Added";
+      setTimeout(() => { e.target.textContent = "Add to cart"; }, 800);
+    });
+    q.oninput = paint;
+    type.onchange = paint;
+    paint();
+  </script>
 </body>
 </html>
