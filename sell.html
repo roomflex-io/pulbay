@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sell — PUL</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <a class="logo" href="index.html">PUL<span>베이</span></a>
+    <nav><a class="pill" href="index.html">Back</a></nav>
+  </header>
+  <main class="sheet">
+    <p class="kicker">Seller desk</p>
+    <h1>List an item</h1>
+    <p class="lead">Payments are not live. This is the form so the page feels finished.</p>
+    <form onsubmit="event.preventDefault(); ok.hidden=false;">
+      <label>What is it</label>
+      <select>
+        <option>Photocard</option>
+        <option>Album</option>
+        <option>Lightstick</option>
+        <option>Other merch</option>
+      </select>
+      <label>Group / act</label>
+      <input placeholder="e.g. NewJeans" />
+      <label>Price (£)</label>
+      <input type="number" min="1" step="0.01" />
+      <label>Condition</label>
+      <select>
+        <option>Sealed / unused</option>
+        <option>Used — good</option>
+        <option>Used — worn</option>
+      </select>
+      <label>Notes</label>
+      <textarea rows="4" placeholder="Inclusion, era, scratches…"></textarea>
+      <button type="submit">Save draft</button>
+      <p id="ok" hidden>Draft only. Live listings need payments + login next.</p>
+    </form>
+  </main>
+</body>
+</html>
